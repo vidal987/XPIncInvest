@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using XPIncInvest.Application.Exceptions;
+using XPIncInvest.Application.Services.UserService;
 using XPIncInvest.Infrastructure.Context;
 
 
@@ -12,6 +14,12 @@ namespace XPIncInvest.API.ConfigurationServices
         public static IServiceCollection AddMediator(this IServiceCollection services) 
         {
             services.AddMediatR(cf => cf.RegisterServicesFromAssemblies(Assembly.Load("XPIncInvest.Application")));
+            services.AddScoped<ValidUserService, ValidUserService>();
+
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(RemoveExceptionDetailsFilter));
+            });
 
             return services;
         }

@@ -18,10 +18,10 @@ namespace XPIncInvest.API.Controllers
         }
 
         [HttpPost]
-        //[Route("register")]
+        [Route("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Register(CreateStockCommand command)
+        public async Task<IActionResult> Create(CreateStockCommand command)
         {
             if (!ModelState.IsValid)
             {
@@ -34,5 +34,22 @@ namespace XPIncInvest.API.Controllers
 
         }
 
+        [HttpPost]
+        [Route("update")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(UpdateStockCommand command)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _mediator.Send(command);
+
+            return Ok(result);
+
+
+        }
     }
 }

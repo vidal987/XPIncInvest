@@ -1,4 +1,5 @@
-﻿using XPIncInvest.Domain.Enums;
+﻿using XPIncInvest.Domain.Entities.WalletEntity;
+using XPIncInvest.Domain.Enums;
 using XPIncInvest.Domain.Exceptions;
 using XPIncInvest.Domain.Primitives;
 
@@ -27,12 +28,10 @@ namespace XPIncInvest.Domain.Entities.StockEntity
         public DateTime DueDate { get; private set; }
         public Category Category { get; private set; }
         public bool IsActived { get; private set; }
+        public virtual IReadOnlyCollection<Wallet> Wallets { get; set; }
 
 
-        public void ChangePrice(decimal price)
-        {
-            Price = price;
-        }
+
 
         public void SellStock(int quantity)
         {
@@ -57,10 +56,36 @@ namespace XPIncInvest.Domain.Entities.StockEntity
             Quantity -= quantity;
         }
 
-        public void InactivedStock()
+        public void ChangeStatus(bool status)
         {
             //Inativa o titulo depois que vencido;
-            IsActived &= !IsActived;
+            IsActived = status;
+        }
+
+        public void ChangeDueDate(DateTime dateTime)
+        {
+            //VERIFICA A DATA DE VENCIMENTO PARA NÃO ALTEARAR SE FOR MENOR OU IGUAL A DATA ATUAL
+            if(dateTime < DueDate)
+            {
+                throw new DomainException("It was not possible to change the due date as it is either equal to or less than the current date");
+            }
+
+            DueDate = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+        }
+
+        public void ChangeStockPrice(decimal newPrice)
+        {
+            if(newPrice <= 0)
+            {
+                throw new DomainException("Price cannot be less than or equal to zero");
+            }
+
+            Price = newPrice;   
+        }
+
+        public void ChangeCategory(Category category)
+        {
+            Category = category;
         }
     }
 }

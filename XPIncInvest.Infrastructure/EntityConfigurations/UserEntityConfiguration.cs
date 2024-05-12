@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using XPIncInvest.BuildingBlocks.EntityConfigurations;
 using XPIncInvest.Domain.Entities.UserEntity;
+using XPIncInvest.Domain.Entities.WalletEntity;
 
 namespace XPIncInvest.Infrastructure.EntityConfigurations
 {
@@ -26,6 +27,11 @@ namespace XPIncInvest.Infrastructure.EntityConfigurations
             builder
                 .Property(c => c.Role)
                 .IsRequired();
+
+            builder
+                .HasOne(x => x.Wallet)
+                .WithOne(x => x.User)
+                .HasForeignKey<Wallet>(w => w.UserId);
 
             base.Configure(builder);
         }
